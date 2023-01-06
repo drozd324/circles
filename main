@@ -1,0 +1,105 @@
+import pygame
+import random
+import math
+
+pygame.display.set_caption('circles')
+(width, height) = (500, 500)
+screen = pygame.display.set_mode((width, height))
+
+white = (255,255,255)
+black = (0,0,0)
+blue = (0,0,255)
+
+max_radius = 150
+
+class Object:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.radius = 0
+        self.width = 1
+        self.time = 0
+
+        self.red = 0 
+        self.green = 0
+        self.blue = 255
+        self.colour = (self.red, self.green, self.blue)
+
+    def update(self):
+        self.time += .05
+        self.radius = self.time
+        self.red = ((255 * self.time) / max_radius) 
+        self.green = self.red
+
+        pygame.draw.circle(screen, (self.red, self.green, self.blue), (self.x, self.y), self.radius, self.width)
+        
+objects = []
+lines = []
+
+def create_object(x, y):
+    object = Object(x, y)
+    objects.append(object)
+
+line_x = width/2
+line_y = height/2
+angle = random.uniform(0, 2 * math.pi)
+smoothnes = 150
+speed = 5
+tick = 0
+spread = 5
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            (mouseX, mouseY) = pygame.mouse.get_pos()
+            create_object(mouseX, mouseY)
+        if pygame.mouse.get_pressed()[0]:
+            (mouseX, mouseY) = pygame.mouse.get_pos()
+            create_object(mouseX, mouseY)
+            
+    screen.fill(white)
+
+    for i, object in enumerate(objects):
+        if object.radius > max_radius:
+            objects.remove(object)                  
+        object.update()
+
+    # uncomment the rest to get it doing stuff by istelf up to where noted 
+    
+    """line_x_0 = line_x
+    line_y_0 = line_y
+
+    if random.randint(0,20) < 11:
+        angle += 2 * math.pi / smoothnes
+    else:
+        angle -= 2 * math.pi / smoothnes
+    
+    speed = math.sin(random.uniform(0,math.pi))
+
+    line_x += speed * math.cos(angle)
+    line_y += speed * math.sin(angle)
+
+    lines.append([line_x_0, line_y_0, line_x, line_y])
+
+    if line_x < 0:
+        line_x = width
+    elif line_x > width:
+        line_x = 0
+
+    if line_y < 0:
+        line_y = height
+    elif line_y > height:
+        line_y = 0
+
+    tick += 1
+    if tick == spread:
+        tick = 0
+        create_object(line_x, line_y)
+
+    for i in range(len(lines)):
+        pygame.draw.line(screen, black, (lines[i][0], lines[i][1]), (lines[i][2], lines[i][3]))""" # <--- up to here
+    
+    pygame.display.flip()
